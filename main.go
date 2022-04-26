@@ -1,47 +1,125 @@
 package main
 
 import (
-	"errors"
+	"bufio"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
+	"os"
+	"strings"
 )
 
-type Animal struct {
-	Name string
-	legs int
+func open(name string) (*os.File, error) {
+	f, err := os.Open(name)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	return f, err
 }
 
-type ToString interface {
-	PrintAdr() (string, error)
+func readFile(name string) ([]string, error) {
+	f, err := open(name)
+	if err != nil {
+		return nil, err
+	}
+	reader := bufio.NewReader(f)
+	log.Printf("%v", f)
+	var lines []string
+	for {
+		line, err := reader.ReadString('\n')
+		log.Printf("%v", line)
+
+		if err != io.EOF {
+			break
+		}
+
+		if err != nil {
+			log.Printf("%v", err)
+			return nil, err
+		}
+
+		lines = append(lines, string(line))
+	}
+	return lines, nil
 }
 
-func (n Adresse) PrintAdr() (string, error) {
-	if n.Ort == "" {
-		return fmt.Sprintf("%v %v\n", n.Name, n.Vorname), nil
+func scan() {
+	f, err := open("RP.fhx")
+	if err != nil {
+		fmt.Println(err)
 	}
-	return fmt.Sprintf("%v %v %v\n", n.Name, n.Vorname, n.Ort), nil
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
 }
-func (n Animal) PrintAdr() (string, error) {
-	if n.Name == "" {
-		return fmt.Sprintf("%v\n", n.Name), nil
+
+func util() {
+	content, err := ioutil.ReadFile("RP.fhx")
+	if err != nil {
+		log.Println(err)
+		return
 	}
-	return "", errors.New("Kein Name vorhanden")
+	str := strings.Split(string(content), "\n")
+	fmt.Printf("%v\n", str)
+}
+
+func stream() {
+	f, err := os.Open("RP.fhx")
+	if err != nil {
+		log.Printf("%v\n", err)
+		return
+	}
+	defer f.Close()
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+
+	const BufferSize = 128
+
+	b1 := make([]byte, BufferSize)
+	for {
+		n, err := f.Read(b1)
+
+		if err != nil {
+			if err != io.EOF {
+				log.Printf("%v\n", err)
+			}
+			break
+		}
+
+		fmt.Println("Bytes Read:", n)
+		fmt.Println("Content", string(b1[:n]))
+	}
+
+}
+
+func scanLine() {
+	f, err := os.Open("RP.fhx")
+	if err != nil {
+		log.Printf("%v\n", err)
+		return
+	}
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	scanner.Split(bufio.ScanLines)
+	var text []string
+	for scanner.Scan() {
+		text = append(text, scanner.Text())
+	}
+
+	// for _, each_ln := range text {
+	// 	fmt.Println(each_ln)
+	// }
+
+	fmt.Printf("%v\n", len(text))
 }
 
 func main() {
-
-	adr := Adresse{
-		Name:    "Schmid",
-		Vorname: "Lothar",
-	}
-	fmt.Println(adr.PrintAdr())
-	// fmt.Printf("%v %v\n", adr.Name, adr.Vorname)
-
-	var ort string
-
-	fmt.Printf("Bitte Ort eingeben: ")
-	fmt.Scan(&ort)
-	adr.Ort = ort
-	pr, _ := adr.PrintAdr()
-	fmt.Printf("%v\n", pr)
-	fmt.Printf("%v", adr.String())
+	// util()
+	// stream()
+	scanLine()
 }
