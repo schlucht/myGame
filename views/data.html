@@ -1,0 +1,37 @@
+{{define "content"}}
+    <div class="container">
+        <h1>{{.Title}}</h1>    
+        <h3>{{ .Path }}</h3> 
+        <ul>          
+            {{range .Data}}
+                {{if not .IsOut}}
+                    <li class="in" data-msg="{{.Text}}">Fr.&nbsp;{{.Amount}}</li>
+                    {{else}}
+                    <li data-msg="{{.Text}}">Fr.&nbsp;{{.Amount}}</li>
+                {{end}}
+            {{end}} 
+       
+        </ul>
+    </div> 
+    <script>
+        let lis = document.querySelectorAll("li")
+        let body = document.querySelector("body")
+        let msg = document.createElement("p")
+        for (let li of lis) {
+            li.addEventListener("mousemove", (e) => {
+                let l = e.target
+                let cursorX = (window.Event) ? e.pageX : event.clientX + (document.documentElement.scrollLeft ? document.documentElement.scrollLeft : body.scrollLeft);
+                let cursorY = (window.Event) ? e.pageY : event.clientY + (document.documentElement.scrollTop ? document.documentElement.scrollTop : body.scrollTop);
+                msg.innerText = l.dataset.msg
+                msg.classList.add("msgPopup")
+                msg.style.left = (cursorX + 3) + "px"  
+                msg.style.top = (cursorY + 3) + "px"                        
+                body.appendChild(msg)
+                msg.style.display = "block"
+            })
+            li.addEventListener("mouseout", (e) => {
+                msg.style.display ="none"
+            })
+        }
+    </script>  
+    {{end}} 

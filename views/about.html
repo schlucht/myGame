@@ -1,0 +1,17 @@
+{{template "header" .}}
+<header>
+    <img src="/static/images/gomot.svg" width="120" height="120">
+    <a href="/index">Home</a>
+</header>
+
+
+<div class="container">    
+        <h1>{{.Title}}</h1>
+        <p>{{.Path}}</p>
+        {{if not .Data }}
+            <p>Keine Daten</p>
+            <span>({{.Data}})</span>
+        {{ else }}
+            <p>{{.Data.Name}}</p>
+        {{end}}
+</div>
