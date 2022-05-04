@@ -27,7 +27,7 @@ func aboutHandler(w http.ResponseWriter, r *http.Request) {
 		Name: "Lothar",
 	}
 	pag = pag.New("About", "Email", &dat)
-	server.RenderTemplate(w, "about.html", pag)
+	server.RenderTemplate(w, "index.html", pag)
 }
 
 func main() {

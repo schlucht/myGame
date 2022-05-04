@@ -1,17 +1,12 @@
-{{template "header" .}}
-<header>
-    <img src="/static/images/gomot.svg" width="120" height="120">
-    <a href="/index">Home</a>
-</header>
+{{define "content"}}
+
 
 
 <div class="container">    
-        <h1>{{.Title}}</h1>
-        <p>{{.Path}}</p>
-        {{if not .Data }}
-            <p>Keine Daten</p>
-            <span>({{.Data}})</span>
-        {{ else }}
-            <p>{{.Data.Name}}</p>
-        {{end}}
+        <span>Mein About!!</span>
+        <h1>{{.Title}}</h1>     
+        <h3>{{.Path}}</h3> 
+        <p>{{.Data.Name}}</p> 
 </div>
+
+{{end}}
